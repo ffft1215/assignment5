@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Tic Tac Toe</title>
+		<link rel="stylesheet" type="text/css" href="styles.css" />
+	</head>
+	<body>
+		<h1>Tic Tac Toe</h1>
+		<div id="board"></div>
+		<div id="message"></div>
+		<button id="reset-button" onclick="resetGame()">New Game</button>
+
+		<script>
+			const board = document.getElementById("board");
+			let squares = ["", "", "", "", "", "", "", "", ""];
+			let currentPlayer = "X";
+			var message = document.getElementById("message");
+
+			function createSquare() {
+				const square = document.createElement("div");
+				square.classList.add("square");
+				square.addEventListener("click", handleClick);
+				return square;
+			}
+
+			function createSquares() {
+				for (let i = 0; i < 9; i++) {
+					const square = createSquare();
+					board.appendChild(square);
+				}
+			}
+
+			function handleClick(event) {
+				if (gameActive && event.target.textContent === "") {
+					const index = Array.from(board.children).indexOf(event.target);
+					squares[index] = currentPlayer;
+					event.target.textContent = currentPlayer;
+					currentPlayer = currentPlayer === "X" ? "O" : "X";
+					checkWin();
+				}
+			}
+
+			function checkWin() {
+				const winPatterns = [
+					[0, 1, 2],
+					[3, 4, 5],
+					[6, 7, 8],
+					[0, 3, 6],
+					[1, 4, 7],
+					[2, 5, 8],
+					[0, 4, 8],
+					[2, 4, 6],
+				];
+
+				for (const pattern of winPatterns) {
+					const [a, b, c] = pattern;
+					if (
+						squares[a] &&
+						squares[a] === squares[b] &&
+						squares[a] === squares[c]
+					) {
+						gameActive = false;
+						message.textContent = "Player " + squares[a] + " wins!";
+						return;
+					}
+				}
+
+				if (!squares.includes("")) {
+					message.textContent = "It's a draw!";
+				}
+			}
+
+			function resetGame() {
+				console.log("HERE!");
+				squares = ["", "", "", "", "", "", "", "", ""];
+				const squaresHTML = document.getElementsByClassName("square");
+				for (let i = 0; i < squaresHTML.length; i++) {
+					squaresHTML[i].textContent = "";
+				}
+				currentPlayer = "X";
+				gameActive = true;
+				message.textContent = "";
+			}
+
+			var gameActive = true;
+			createSquares();
+		</script>
+	</body>
+</html>
